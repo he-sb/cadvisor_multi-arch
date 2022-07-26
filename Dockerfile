@@ -2,7 +2,7 @@ FROM golang:1.18 AS build
 
 RUN apt update && apt install -y git dmsetup
 RUN git clone \
-        --branch v0.44.1 \
+        --branch release-v0.44 \
         --depth 1 \
         https://github.com/google/cadvisor.git \
         /go/src/github.com/google/cadvisor
