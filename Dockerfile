@@ -1,11 +1,9 @@
 FROM golang:1.18 AS build
 
 RUN apt update && apt install -y git dmsetup && \
-    git clone -b master https://github.com/google/cadvisor.git /go/src/github.com/google/cadvisor && \
-    cd /go/src/github.com/google/cadvisor && \
-    make build && \
-    mv cadvisor /cadvisor
-WORKDIR /cadvisor
+    git clone -b master https://github.com/google/cadvisor.git /go/src/github.com/google/cadvisor
+WORKDIR /go/src/github.com/google/cadvisor
+RUN make build
 
 FROM alpine:latest
 
@@ -14,7 +12,7 @@ RUN apk --no-cache add libc6-compat device-mapper findutils zfs && \
     echo 'hosts: files mdns4_minimal [NOTFOUND=return] dns mdns4' >> /etc/nsswitch.conf && \
     rm -rf /var/cache/apk/*
 
-COPY --from=build /cadvisor /usr/bin/cadvisor
+COPY --from=build /go/src/github.com/google/cadvisor/cadvisor /usr/bin/cadvisor
 
 EXPOSE 8080
 
