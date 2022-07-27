@@ -1,11 +1,7 @@
 FROM golang:1.18 AS build
 
 RUN apt update && apt install -y git dmsetup
-RUN git clone \
-        --branch release-v0.44 \
-        --depth 1 \
-        https://github.com/google/cadvisor.git \
-        /go/src/github.com/google/cadvisor
+RUN git clone -b master https://github.com/google/cadvisor.git /go/src/github.com/google/cadvisor
 WORKDIR /go/src/github.com/google/cadvisor
 RUN make build
 
