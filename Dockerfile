@@ -1,18 +1,22 @@
 FROM golang:1.18 AS build
 
-ARG CADVISOR_VERSION='v0.44.0'
+ARG CADVISOR_VERSION='master'
 
-RUN apt update && apt install -y git dmsetup && \
-    git clone -b ${CADVISOR_VERSION} https://github.com/google/cadvisor.git /go/src/github.com/google/cadvisor
+RUN apt update && \
+  apt install -y git dmsetup make gcc && \
+  git clone https://github.com/google/cadvisor.git /go/src/github.com/google/cadvisor
 WORKDIR /go/src/github.com/google/cadvisor
-RUN make
+RUN git fetch --tags && \
+  git checkout ${CADVISOR_VERSION} && \
+  go env -w GO111MODULE=auto && \
+  make build
 
 FROM alpine:latest
 
 RUN apk --no-cache add libc6-compat device-mapper findutils zfs && \
-    apk --no-cache add thin-provisioning-tools --repository http://dl-3.alpinelinux.org/alpine/edge/main/ && \
-    echo 'hosts: files mdns4_minimal [NOTFOUND=return] dns mdns4' >> /etc/nsswitch.conf && \
-    rm -rf /var/cache/apk/*
+  apk --no-cache add thin-provisioning-tools --repository http://dl-3.alpinelinux.org/alpine/edge/main/ && \
+  echo 'hosts: files mdns4_minimal [NOTFOUND=return] dns mdns4' >> /etc/nsswitch.conf && \
+  rm -rf /var/cache/apk/*
 
 COPY --from=build /go/src/github.com/google/cadvisor/cadvisor /usr/bin/cadvisor
 
