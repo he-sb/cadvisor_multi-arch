@@ -1,9 +1,12 @@
 name: Build cadvisor
 
 on:
-  push:
-    branches:
-      - master
+  workflow_dispatch:
+    inputs:
+      cadvisor_version:
+        description: 'Version of google/cadvisor, support tag name or branch name (recommand using tag name)'
+        required: true
+        default: 'v0.44.0'
 
 jobs:
   build-arm64-version:
@@ -29,8 +32,10 @@ jobs:
           context: .
           platforms: linux/arm64
           push: true
+          build-args: CADVISOR_VERSION=${{ github.event.inputs.cadvisor_version }}
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/cadvisor-arm64:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/cadvisor-arm64:${{ github.event.inputs.cadvisor_version }}
 
   build-amd64-version:
     runs-on: ubuntu-latest
@@ -55,8 +60,10 @@ jobs:
           context: .
           platforms: linux/amd64
           push: true
+          build-args: CADVISOR_VERSION=${{ github.event.inputs.cadvisor_version }}
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/cadvisor-amd64:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/cadvisor-amd64:${{ github.event.inputs.cadvisor_version }}
   
   combine-two-images:
     runs-on: ubuntu-latest
@@ -74,4 +81,7 @@ jobs:
       - name: Combine two images
         run: |
           docker manifest create ${{ secrets.DOCKERHUB_USERNAME }}/cadvisor:latest --amend ${{ secrets.DOCKERHUB_USERNAME }}/cadvisor-amd64:latest --amend ${{ secrets.DOCKERHUB_USERNAME }}/cadvisor-arm64:latest
+          docker manifest create ${{ secrets.DOCKERHUB_USERNAME }}/cadvisor:${{ github.event.inputs.cadvisor_version }} --amend ${{ secrets.DOCKERHUB_USERNAME }}/cadvisor-amd64:${{ github.event.inputs.cadvisor_version }} --amend ${{ secrets.DOCKERHUB_USERNAME }}/cadvisor-arm64:${{ github.event.inputs.cadvisor_version }}
+
           docker manifest push ${{ secrets.DOCKERHUB_USERNAME }}/cadvisor:latest
+          docker manifest push ${{ secrets.DOCKERHUB_USERNAME }}/cadvisor:${{ github.event.inputs.cadvisor_version }}

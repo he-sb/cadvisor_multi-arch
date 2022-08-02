@@ -1,7 +1,9 @@
 FROM golang:1.18 AS build
 
+ARG CADVISOR_VERSION='v0.44.0'
+
 RUN apt update && apt install -y git dmsetup && \
-    git clone -b master https://github.com/google/cadvisor.git /go/src/github.com/google/cadvisor
+    git clone -b ${CADVISOR_BRANCH} https://github.com/google/cadvisor.git /go/src/github.com/google/cadvisor
 WORKDIR /go/src/github.com/google/cadvisor
 RUN make build
 
