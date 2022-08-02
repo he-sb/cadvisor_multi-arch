@@ -5,8 +5,7 @@ ARG CADVISOR_VERSION='v0.44.0'
 RUN apt update && apt install -y git dmsetup && \
     git clone -b ${CADVISOR_VERSION} https://github.com/google/cadvisor.git /go/src/github.com/google/cadvisor
 WORKDIR /go/src/github.com/google/cadvisor
-RUN go env -w GO111MODULE=on && \
-    make build
+RUN make
 
 FROM alpine:latest
 
