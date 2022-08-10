@@ -9,7 +9,9 @@ WORKDIR /go/src/github.com/google/cadvisor
 RUN git fetch --tags && \
   git checkout ${CADVISOR_VERSION} && \
   go env -w GO111MODULE=auto && \
-  make build
+  make build && \
+  [ -f "./cadvisor" ] || \
+  mv ./_output/cadvisor ./cadvisor
 
 FROM alpine:latest
 
