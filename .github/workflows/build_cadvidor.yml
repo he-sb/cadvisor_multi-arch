@@ -6,7 +6,7 @@ on:
       cadvisor_version:
         description: 'Version of google/cadvisor, support tag name or branch name (recommand using tag name)'
         required: true
-        default: 'v0.44.0'
+        default: 'v0.45.0'
 
 jobs:
   build-arm64-version:
