@@ -33,6 +33,8 @@ jobs:
           platforms: linux/arm64
           push: true
           build-args: CADVISOR_VERSION=${{ github.event.inputs.cadvisor_version }}
+          provenance: false
+          sbom: false
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/cadvisor:latest-arm64
             ${{ secrets.DOCKERHUB_USERNAME }}/cadvisor:${{ github.event.inputs.cadvisor_version }}-arm64
@@ -61,6 +63,8 @@ jobs:
           platforms: linux/amd64
           push: true
           build-args: CADVISOR_VERSION=${{ github.event.inputs.cadvisor_version }}
+          provenance: false
+          sbom: false
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/cadvisor:latest-amd64
             ${{ secrets.DOCKERHUB_USERNAME }}/cadvisor:${{ github.event.inputs.cadvisor_version }}-amd64
