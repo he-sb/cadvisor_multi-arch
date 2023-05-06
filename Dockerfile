@@ -1,4 +1,4 @@
-FROM golang:1.18 AS build
+FROM golang:1.20 AS build
 
 ARG CADVISOR_VERSION='master'
 
@@ -15,7 +15,7 @@ RUN git fetch --tags && \
 
 FROM alpine:latest
 
-RUN apk --no-cache add libc6-compat device-mapper findutils zfs && \
+RUN apk --no-cache add libc6-compat device-mapper findutils ndctl zfs && \
   apk --no-cache add thin-provisioning-tools --repository http://dl-3.alpinelinux.org/alpine/edge/main/ && \
   echo 'hosts: files mdns4_minimal [NOTFOUND=return] dns mdns4' >> /etc/nsswitch.conf && \
   rm -rf /var/cache/apk/*
