@@ -31,6 +31,8 @@ jobs:
 
       - name: Build and push ARM64 Version
         uses: docker/build-push-action@v7
+        env:
+          DOCKER_BUILD_RECORD_UPLOAD: false
         with:
           context: .
           platforms: linux/arm64
@@ -64,6 +66,8 @@ jobs:
 
       - name: Build and push AMD64 Version
         uses: docker/build-push-action@v7
+        env:
+          DOCKER_BUILD_RECORD_UPLOAD: false
         with:
           context: .
           platforms: linux/amd64
